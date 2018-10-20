@@ -1,0 +1,104 @@
+/* 基本的にはampのものと同じだが、pタグ下のpaddingのみ削除 */ 
+
+/* アプリのページで共通となるcss */
+
+@font-face {
+  font-family: "Yu Gothic";
+  src: local("Yu Gothic Medium");
+  font-weight: 100;
+}
+
+@font-face {
+  font-family: "Yu Gothic";
+  src: local("Yu Gothic Medium");
+  font-weight: 200;
+}
+
+@font-face {
+  font-family: "Yu Gothic";
+  src: local("Yu Gothic Medium");
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: "Yu Gothic";
+  src: local("Yu Gothic Medium");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Yu Gothic";
+  src: local("Yu Gothic Bold");
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: "Helvetica Neue";
+  src: local("Helvetica Neue Regular");
+  font-weight: 100;
+}
+
+@font-face {
+  font-family: "Helvetica Neue";
+  src: local("Helvetica Neue Regular");
+  font-weight: 200;
+}
+
+html {
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Original Yu Gothic", "Yu Gothic", YuGothic, Verdana, Meiryo, "M+ 1p", sans-serif;
+}
+
+@media all and (-ms-high-contrast: none) {
+  html {
+    font-family: Verdana, Meiryo, sans-serif;
+  }
+}
+
+@media all and (-ms-high-contrast: active) {
+  html {
+    font-family: Verdana, Meiryo, sans-serif;
+  }
+}
+
+svg {
+  fill: cuttenrColor;
+}
+
+html {
+  font-size: 62.5%;
+}
+
+body {
+  font-size: 1.7rem;
+  border: none;
+  color: #1A1A1A;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+h1 {
+  font-size: 3.6rem;
+  color: #333333;
+  font-weight: bold;
+}
+
+h2 {
+  font-size: 3.2rem;
+  color: #333333;
+  font-weight: bold;
+}
+
+h3 {
+  font-size: 2rem;
+  color: #333333;
+  font-weight: bold;
+}
+
+h4 {
+  font-size: 2.4rem;
+  color: #333333;
+  font-weight: bold;
+}
