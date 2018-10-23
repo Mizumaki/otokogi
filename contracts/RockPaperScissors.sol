@@ -21,10 +21,6 @@ contract RockPaperScissors is Ownable {
     _;
   }
 
-  //function ethHoldings() external view returns(uint) {
-  //  return msg.sender.balance;
-  //}
-
   function canStart(uint _price) external view returns(bool) {
     if (msg.sender.balance >= _price * 2 ether) {
       return true;
