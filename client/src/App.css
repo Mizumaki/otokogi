@@ -1,3 +1,354 @@
+body {
+  background: #152231;
+  color: white;
+}
+
+h1 {
+  color: white;
+}
+
+
+p {
+  padding: 1em 0;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+button, input[type=submit] {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+}
+
+button:hover, input[type=submit]:hover {
+  opacity: .8;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+}
+
+button:disabled, input[type=submit]:disabled {
+  opacity: .5;
+}
+
+button:disabled:hover, input[type=submit]:disabled:hover {
+  opacity: .5;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+}
+
 .App {
+  position: relative;
+  padding: 2.4rem;
+  width: 70rem;
+  margin: 0 auto;
+}
+
+.header {
   text-align: center;
+}
+
+h1.title {
+  text-align: center;
+}
+
+.info {
+  width: 385px;
+  display: inline-block;
+  padding: 2rem;
+  margin: 3rem 0;
+  border-radius: 1rem;
+  text-align: right;
+  background: #152231;
+  color: white;
+}
+
+.condition {
+  margin-bottom: 1em;
+}
+
+.condition .flag {
+  display: inline-block;
+  padding: .5rem;
+  border: 1px solid indianred;
+  border-radius: .5rem;
+  font-size: 1.2rem;
+  vertical-align: middle;
+}
+
+.flag.web3 {
+  border: none;
+  background: limegreen;
+}
+
+.info .on-chain {
+  font-size: 1.4rem;
+}
+
+.on-chain-data {
+  text-align: left;
+  margin-bottom: 3rem;
+}
+
+.on-chain-data .tag {
+  display: inline-block;
+  padding: .2em .8em;
+  background: slategrey;
+  border-top-left-radius: .4rem;
+  border-top-right-radius: .4rem;
+}
+
+.on-chain-data .value {
+  display: block;
+  height: 4rem;
+  color: black;
+  padding: .5em 1em;
+  font-size: 1.6rem;
+  background: white;
+  text-align: right;
+}
+
+span.address {
+  font-size: 1.2rem;
+}
+
+span.address-url {
+  display: block;
+  text-align: right;
+  font-size: 1.2rem;
+}
+
+span.address-url a {
+  display: inline-block;
+  padding: .5em;
+}
+
+.game-description {
+  line-height: 2em;
+  text-align: left;
+}
+
+.main {
+  background: white;
+  margin-top: 2rem;
+  padding: 3rem 3rem 1rem 3rem;
+  border-radius: 3rem;
+  color: black;
+  position: relative;
+}
+
+.popup {
+  position: relative;
+  border-radius: 1rem;
+  padding: 2rem;
+  text-align: center;
+  margin: 3rem 0;
+  color: #333333;
+  font-weight: bold;
+}
+
+.popup p {
+  text-align: left;
+  padding-top: 0;
+}
+
+.popup::before {
+  position: absolute;
+  display: inline-block;
+  padding: .2em 1em;
+  font-size: 1.4rem;
+  top: -1em;
+  left: .5em;
+}
+
+.popup button {
+  padding: .5em 1em;
+  border-radius: 5px;
+}
+
+.warning {
+  background: lightyellow;
+  border: 1px solid yellow;
+}
+
+.warning::before {
+  content: '注意！';
+  background: #F3EB26;
+}
+
+.warning button {
+  background: white;
+}
+
+.alert {
+  background: crimson;
+  color: white;
+}
+
+.alert::before {
+  content: '注意！';
+  position: absolute;
+  display: inline-block;
+  background: darkred;
+  padding: .2em 1em;
+  font-size: 1.4rem;
+  top: -1em;
+  left: .5em;
+}
+
+.alert button {
+  background: white;
+  color: black;
+}
+
+.exp {
+  background: lightcyan;
+  padding: .5em 2em;
+  border: 1px solid aqua;
+  border-radius: 1rem;
+}
+
+.exp::before {
+  position: absolute;
+  top: -1rem;
+  left: 2rem;
+  padding: .2em 1em;
+  background: orange;
+  color: white;
+  border-radius: 5px;
+}
+
+.step1::before {
+  content: 'STEP1';
+}
+
+.step2::before {
+  content: 'STEP2';
+}
+
+.form {
+  margin-top: 3rem;
+}
+
+form input, form output, form label {
+  display: block;
+}
+
+form input, form output {
+  text-align: center;
+  margin: 1.5rem auto;
+}
+
+form input {
+  margin: 1.5rem auto;
+  border: 1px solid grey;
+  border-radius: 1rem;
+}
+
+form input[type=submit] {
+  border: 1px solid orange;
+  background: orange;
+  color: white;
+  border-radius: .5rem;
+  margin-top: 3rem;
+  padding: .5em 2em;
+}
+
+input[type=submit]:hover {
+  transition: .1s;
+}
+
+form input[type=number] {
+  width: 7em;
+  padding-left: .7em;
+}
+
+form output {
+  font-size: 2rem;
+}
+
+form label {
+  font-size: 2rem;
+  padding: 1.5rem 0;
+}
+
+.rps .hands {
+  display: flex;
+  width: 100%;
+}
+
+.hands .hand-wrapper {
+  flex: 1 1 0;
+  padding: 0 1rem;
+}
+
+.rps .hands label {
+  text-align: center;
+  height: 22rem;
+  border: 1px solid darkgrey;
+  border-radius: 1rem;
+  background: ghostwhite;
+  color: #333333;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+}
+
+.rps .hands .far {
+  font-size: 8rem;
+}
+
+input[name=rps] {
+  display: none;
+}
+
+label i {
+  position: relative;
+}
+
+span.hand-name {
+  position: absolute;
+  top: 13rem;
+  left: -5rem;
+  width: 5em;
+  font-size: 3.8rem;
+}
+
+.scissors span.hand-name {
+  left: -5.9rem;
+}
+
+input[type=radio]:checked + label {
+  background: skyblue;
+  color: white;
+  transition: .2s;
+}
+
+.rps-result {
+  text-align: center;
+}
+
+.rps-result i.fa-crown {
+  font-size: 5rem;
+  color: gold
+}
+
+.rps-result i.fa-tired {
+  font-size: 6rem;
+  color: dimgray;
+}
+
+.rps-result h2 {
+  margin-top: 2rem;
+}
+
+.rps-result p {
+  text-align: left;
+}
+
+.link {
+  display: block;
+  text-align: center;
+}
+
+@media (min-width: 1500px) {
+  .info {
+    position: fixed;
+    right: 2rem;
+  }
 }
