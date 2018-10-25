@@ -13,7 +13,7 @@ class App extends React.Component {
     this.state = {
       web3: null, accounts: null, contract: null,
       balance: "", donationAddress: "", stakeEth: "", ethToFiat: "", hand: '',
-      phase: "decideEth", connectingWeb3: false
+      phase: "decideEth", connectingWeb3: false, error: ''
     };
     this.updateInfo = this.updateInfo.bind(this);
     this.connectWeb3 = this.connectWeb3.bind(this);
@@ -47,22 +47,14 @@ class App extends React.Component {
   connectWeb3 = async () => {
     try {
       this.setState({ connectingWeb3: true });
-      console.log('1')
       const web3 = await getWeb3();
-      console.log('2')
       const accounts = await web3.eth.getAccounts();
-      console.log('3')
       const Contract = truffleContract(RpsContract);
-      console.log('4')
       Contract.setProvider(web3.currentProvider);
-      console.log('5')
       const instance = await Contract.deployed();
-      console.log('6')
 
       this.setState({ web3, accounts, contract: instance }, this.updateInfo);
-      console.log('7')
       this.setState({ connectingWeb3: false });
-      console.log('8')
     }
     catch (error) {
       this.setState({ connectingWeb3: false });
@@ -76,17 +68,21 @@ class App extends React.Component {
     if (this.state.web3) {
       const { web3, accounts, contract } = this.state;
       //await contract.setDonationAddress("0x16486F0ED7a923Bd5b70A4e666A6BfBDB822dEAF", { from: accounts[0] });
-      const balance = await web3.eth.getBalance(accounts[0]);
+      const balanceWei = await web3.eth.getBalance(accounts[0]);
+      const balanceEth = web3.utils.fromWei(balanceWei, 'ether')
       const donationAddress = await contract.checkDonationAddress();
       // if there are any change in balance or address to donation, change state
-      if (balance !== this.state.balance || donationAddress !== this.state.donationAddress) {
-        this.setState({ balance: balance.toString(), donationAddress: donationAddress.toString() });
+      if (balanceEth !== this.state.balance || donationAddress !== this.state.donationAddress) {
+        this.setState({ balance: balanceEth.toString(), donationAddress: donationAddress.toString() });
       }
     }
   };
 
-  changePhase = (value) => {
-    this.setState({phase: value});
+  changePhase = (value, additional) => {
+    this.setState({ phase: value });
+    if (additional) {
+      this.setState({error: additional});
+    }
   };
 
   render() {
@@ -124,7 +120,7 @@ class App extends React.Component {
             <div>
               <Explanation draw {...this.state} connectWeb3={this.connectWeb3} changePhase={this.changePhase} />
               <div className="form">
-                <SelectHand {...this.state} changePhase={this.changePhase} handleSubmit={this.submitHand} />
+                <SelectHand {...this.state} changePhase={this.changePhase} setHand={this.setHand} />
               </div>
             </div>
           );
@@ -138,6 +134,12 @@ class App extends React.Component {
           return (
             <div>
               <Explanation lose {...this.state} changePhase={this.changePhase} />
+            </div>
+          );
+          case "unknownError":
+          return (
+            <div>
+              <Explanation unknownError {...this.state} changePhase={this.changePhase} />
             </div>
           );
         default:

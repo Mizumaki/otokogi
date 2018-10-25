@@ -1,4 +1,5 @@
 import React from 'react';
+import BN from 'bn.js';
 
 class SelectHand extends React.Component {
   constructor(props) {
@@ -17,18 +18,65 @@ class SelectHand extends React.Component {
 
   rps = async () => {
     const { web3, contract, accounts } = this.props;
-    contract.rockPaperScissors(this.props.hand, { from: accounts[0], value: web3.utils.toWei(this.props.stakeEth, "ether") })
-      .then((result) => {
-        console.log(result.logs['args']);
-      });
-    //const event = contract.events.RpsResult({fromBlock: 0, toBlock: 'latest'});
-    //event.watch((err, result) => {
-    //  if (!err) {
+    const doubleStakeEth = parseFloat(this.props.stakeEth) * 2;
+    const doubleStakeWei = web3.utils.toWei(doubleStakeEth.toString(), 'ether');
+    console.log(doubleStakeWei.toString());
+    console.log(contract);
+    contract.RpsResult({ fromBlock: 'latest', toBlock: 'latest' }, (error, result) => {
+      if (!error) {
+        console.log(result);
+        // If this component is updated, the 'result' === false
+        if (!result) {
+          return;
+        }
+        console.log(result.args._result.toString(10));
+        const rpsResult = result.args._result.toString(10)
+        switch (rpsResult) {
+          case '0':
+            this.props.changePhase('draw');
+            break;
+          case '1':
+            this.props.changePhase('lose');
+            break;
+          case '2':
+            this.props.changePhase('win');
+            break;
+          default:
+            break;
+        }
+      } else {
+        this.props.changePhase('unknownError', error);
+      }
+    });
+    // GASの決定方法？？
+    contract.rockPaperScissors(this.props.hand, { from: accounts[0], value: doubleStakeWei, gas: '100000' })
+    //  .then((result) => {
+    //    const status = result.receipt.status;
     //    console.log(result);
-    //    console.log(result.returnValues);
-    //  }
-    //});
-    //event.stopWatching();
+    //    console.log(status);
+    //    if (status) {
+    //      // When transaction was succeeded
+    //      console.log(result.logs[0].args._result.toString(10));
+    //      const rpsResult = result.logs[0].args._result.toString(10)
+    //      switch (rpsResult) {
+    //        case '0':
+    //          this.props.changePhase('draw');
+    //          break;
+    //        case '1':
+    //          this.props.changePhase('lose');
+    //          break;
+    //        case '2':
+    //          this.props.changePhase('win');
+    //          break;
+    //        default:
+    //          break;
+    //      }
+    //    } else {
+    //      // When transaction was failed
+    //      this.props.changePhase('unknownError', result);
+    //    }
+    //  })
+    //  .catch((e) => alert(e));
   }
 
   handleSubmit = (e) => {

@@ -4,7 +4,7 @@ const Explanation = (props) => {
 
   const promptToConnectWeb3 = (
     <div className="popup warning">
-      <p>このゲームをプレイするには、MetaMaskなどのweb3と通信できるアプリケーションと連携を行う必要があります。</p>
+      <p>このゲームをプレイするには、MetaMaskなどのweb3と通信できるアプリケーションと連携を行う必要があります。（MetaMask上でのログインが必要になる場合があります。）</p>
       {props.connectingWeb3 ? (<button onClick={props.connectWeb3} disabled>MetaMask(またはその他のweb3)と連携を試みています</button>) : (<button onClick={props.connectWeb3}>MetaMask(またはその他のweb3)と連携する</button>)}
     </div>);
 
@@ -45,7 +45,7 @@ const Explanation = (props) => {
 
   const win = (
     <div className="rps-result win">
-      <i class="fas fa-crown"></i>
+      <i className="fas fa-crown"></i>
       <h2>🎊 おめでとうございます 🎊<br />あなたの勝ちです</h2>
       <p>
         嬉しいことに、賭けたイーサリアムの2倍の量、
@@ -57,7 +57,7 @@ const Explanation = (props) => {
 
   const lose = (
     <div className="rps-result lose">
-      <i class="fas fa-tired"></i>
+      <i className="fas fa-tired"></i>
       <h2>😢 残念でした 😭<br />あなたの負けです</h2>
       <p>
         残念なことに、賭けたイーサリアムと同じ量、
@@ -66,6 +66,21 @@ const Explanation = (props) => {
       </p>
     </div>
   );
+
+  const unknownError = (
+    <div className="popup warning">
+      <p>エラーが起きました。以下がトランザクションの情報です。</p>
+      <div className="json">
+        <pre>
+          {props.error ? JSON.stringify(props.error, null, 2) : null}
+        </pre>
+      </div>
+    </div>
+  );
+
+  if (props.unknownError) {
+    return unknownError;
+  }
 
   if (props.win || props.lose) {
     const result = props.win ? win : lose;

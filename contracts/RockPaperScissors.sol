@@ -22,7 +22,7 @@ contract RockPaperScissors is Ownable {
   }
 
   function canStart(uint _price) external view returns(bool) {
-    if (msg.sender.balance >= _price * 2 ether) {
+    if (msg.sender.balance >= _price * 2 wei) {
       return true;
     } else {
       return false;

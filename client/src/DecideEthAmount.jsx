@@ -1,4 +1,5 @@
 import React from 'react';
+import BN from 'bn.js';
 
 class DecideEthAmount extends React.Component {
   constructor(props) {
@@ -24,7 +25,10 @@ class DecideEthAmount extends React.Component {
   handleSubmit = (event) => {
     if (this.props.web3) {
       const { web3, accounts, contract } = this.props;
-      const canStart = contract.canStart(this.props.stakeEth);
+      const stakeWei = web3.utils.toWei(this.props.stakeEth, 'ether');
+      console.log(stakeWei);
+      console.log(new BN(stakeWei, 10));
+      const canStart = contract.canStart(stakeWei);
       const next = canStart ? "selectHand" : "notEnoughEth";
       this.props.changePhase(next);
       event.preventDefault();
@@ -34,6 +38,8 @@ class DecideEthAmount extends React.Component {
   render() {
     const submit = this.props.web3 ?
       (<input type="submit" value="男気じゃんけんを始める" />) :
+      this.props.connectingWeb3 ? 
+      (<input type="submit" disabled value="WEB3との連携をトライ中" />) :
       (<input type="submit" disabled value="まずはWEB3と連携してください。" />);
     return (
       <form onSubmit={this.handleSubmit} >
