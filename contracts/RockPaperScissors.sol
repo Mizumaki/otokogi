@@ -9,7 +9,7 @@ contract RockPaperScissors is Ownable {
 
   address donationAddress;
   uint totalAmountOfDonation;
-  event RpsResult(uint indexed _result);
+  event RpsResult(uint indexed _result, uint _sendAmount);
 
   function setDonationAddress(address _account) external onlyOwner() {
     donationAddress = _account;
@@ -39,13 +39,15 @@ contract RockPaperScissors is Ownable {
 
   function random() private view returns (uint) {
     uint randomHash = uint(keccak256(abi.encodePacked(block.difficulty, now)));
-    return randomHash.div(3);
+    return randomHash.mod(3);
   }
 
   function rpsCalc(uint _userHand, uint _randHand) private pure returns (uint) {
-    // マイナスが入るが大丈夫か？？
-    uint result = (_userHand.sub(_randHand).add(3)).div(3);
-    return result;
+    if (_userHand > _randHand) {
+      return (_userHand.sub(_randHand).add(3)).mod(3);
+    } else {
+      return (_randHand.sub(_userHand).add(3)).mod(3);
+    }
   }
 
   function rockPaperScissors(uint _userHand) external affordPay() payable {
@@ -55,18 +57,18 @@ contract RockPaperScissors is Ownable {
     if (result == 1) {
       // LOSE
       donationAddress.transfer(msg.value.div(2));
-      totalAmountOfDonation += msg.value.div(2);
+      totalAmountOfDonation = totalAmountOfDonation.add(msg.value.div(2));
       msg.sender.transfer(msg.value.div(2));
-      emit RpsResult(1);
+      emit RpsResult(1, msg.value.div(2));
     } else if (result == 2) {
       // WIN
       donationAddress.transfer(msg.value);
-      totalAmountOfDonation += msg.value;
-      emit RpsResult(2);
+      totalAmountOfDonation = totalAmountOfDonation.add(msg.value);
+      emit RpsResult(2, msg.value);
     } else if (result == 0){
       // DRAW
       msg.sender.transfer(msg.value);
-      emit RpsResult(0);
+      emit RpsResult(0, 0);
     } else {
       // if result is not 0,1,2 means Error.
       revert();

@@ -22,7 +22,6 @@ class App extends React.Component {
     this.setStakeEth = this.setStakeEth.bind(this);
     this.setEthToFiat = this.setEthToFiat.bind(this);
     this.setHand = this.setHand.bind(this);
-    this.calcAllDonateAmount = this.calcAllDonateAmount.bind(this);
   }
 
   componentDidMount = () => {
@@ -77,8 +76,8 @@ class App extends React.Component {
       if (balanceEth !== this.state.balance || donationAddress !== this.state.donationAddress) {
         this.setState({ balance: balanceEth.toString(), donationAddress: donationAddress.toString() });
       }
-      const totalAmountOfDonation = await contract.getTotalAmountOfDonation();
-      this.setState({totalAmountOfDonation});
+      //const totalAmountOfDonation = await contract.getTotalAmountOfDonation();
+      //this.setState({totalAmountOfDonation});
     }
   };
 
