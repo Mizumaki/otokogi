@@ -5,6 +5,7 @@ import truffleContract from "truffle-contract";
 import Explanation from "./Explanation.jsx";
 import DecideEthAmount from "./DecideEthAmount.jsx";
 import SelectHand from "./SelectHand.jsx";
+import Data from "./Data.jsx";
 import "./App.css";
 
 class App extends React.Component {
@@ -13,7 +14,7 @@ class App extends React.Component {
     this.state = {
       web3: null, accounts: null, contract: null,
       balance: "", donationAddress: "", stakeEth: "", ethToFiat: "", hand: '',
-      phase: "decideEth", connectingWeb3: false, error: ''
+      phase: "data", connectingWeb3: false, error: '', totalAmountOfDonation: ''
     };
     this.updateInfo = this.updateInfo.bind(this);
     this.connectWeb3 = this.connectWeb3.bind(this);
@@ -21,6 +22,7 @@ class App extends React.Component {
     this.setStakeEth = this.setStakeEth.bind(this);
     this.setEthToFiat = this.setEthToFiat.bind(this);
     this.setHand = this.setHand.bind(this);
+    this.calcAllDonateAmount = this.calcAllDonateAmount.bind(this);
   }
 
   componentDidMount = () => {
@@ -32,16 +34,16 @@ class App extends React.Component {
     this.updateInfo();
   }
 
-  setEthToFiat = (value) => { 
-    this.setState({ethToFiat: value});
+  setEthToFiat = (value) => {
+    this.setState({ ethToFiat: value });
   };
 
   setStakeEth = (value) => {
-    this.setState({stakeEth: value});
+    this.setState({ stakeEth: value });
   };
 
   setHand = (value) => {
-    this.setState({hand: value});
+    this.setState({ hand: value });
   }
 
   connectWeb3 = async () => {
@@ -75,15 +77,22 @@ class App extends React.Component {
       if (balanceEth !== this.state.balance || donationAddress !== this.state.donationAddress) {
         this.setState({ balance: balanceEth.toString(), donationAddress: donationAddress.toString() });
       }
+      const totalAmountOfDonation = await contract.getTotalAmountOfDonation();
+      this.setState({totalAmountOfDonation});
     }
   };
 
   changePhase = (value, additional) => {
     this.setState({ phase: value });
     if (additional) {
-      this.setState({error: additional});
+      this.setState({ error: additional });
     }
   };
+
+  toDecideEth = () => {
+    this.changePhase('decideEth');
+    return false;
+  }
 
   render() {
     const main = (() => {
@@ -136,12 +145,19 @@ class App extends React.Component {
               <Explanation lose {...this.state} changePhase={this.changePhase} />
             </div>
           );
-          case "unknownError":
+        case "unknownError":
           return (
             <div>
               <Explanation unknownError {...this.state} changePhase={this.changePhase} />
             </div>
           );
+        case "data":
+          return (
+            <div>
+              <Explanation decideEth {...this.state} connectWeb3={this.connectWeb3} changePhase={this.changePhase} />
+              <Data {...this.state} />
+            </div>
+          )
         default:
           break;
       }
@@ -150,7 +166,7 @@ class App extends React.Component {
     return (
       <div className="App">
         <div className="header">
-          <h1 className="title">漢気じゃんけんDapps</h1>
+          <a onClick={this.toDecideEth}><h1 className="title">漢気じゃんけんDapps</h1></a>
           <p className="game-description">このゲームでは、 実際のイーサリアムを賭けてじゃんけんをしていただきます。負けてしまうと大変残念ながら、
             あなたの賭けたイーサリアムは寄付されます。しかし勝てば、なんと、賭けたイーサリアムの2倍の量を寄付することができます！！
             ぜひ勝って、喜びを噛み締めましょう。
@@ -163,7 +179,7 @@ class App extends React.Component {
               <div className="on-chain-data">
                 <span className="tag">アカウントのETH残高</span>
                 <span className="value">
-                  {this.state.web3 ? this.state.balance : "Web3との連携がなされていません"}
+                  {this.state.web3 ? this.state.balance : "Web3との連携がなされていません"} ETH
                 </span>
               </div>
               <div className="on-chain-data">
@@ -172,6 +188,12 @@ class App extends React.Component {
                   {this.state.web3 ? <span className="address">{this.state.donationAddress}</span> : "Web3との連携がなされていません"}
                 </span>
                 {this.state.web3 ? <span className="address-url"><a href={`https://etherscan.io/address/${this.state.donationAddress}`} target="_blank">Etherscanで見る</a></span> : null}
+              </div>
+              <div className="on-chain-data">
+                <span className="tag">今までの寄付金総額</span>
+                <span className="value">
+                  {this.state.web3 ? this.state.totalAmountOfDonation : "Web3との連携がなされていません"}
+                </span>
               </div>
             </div>
           </div>

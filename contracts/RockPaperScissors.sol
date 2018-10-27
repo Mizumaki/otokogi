@@ -1,11 +1,15 @@
 pragma solidity ^0.4.24;
 
 import '../node_modules/openzeppelin-solidity/contracts/ownership/Ownable.sol';
-//import 'openzeppelin-solidity/contracts/ownership/Ownable.sol';
+import '../node_modules/openzeppelin-solidity/contracts/math/SafeMath.sol';
 
 contract RockPaperScissors is Ownable {
+
+  using SafeMath for uint;
+
   address donationAddress;
-  event RpsResult(uint _result, uint _sendedAmount);
+  uint totalAmountOfDonation;
+  event RpsResult(uint indexed _result);
 
   function setDonationAddress(address _account) external onlyOwner() {
     donationAddress = _account;
@@ -16,13 +20,17 @@ contract RockPaperScissors is Ownable {
     return donationAddress;
   }
 
+  function getTotalAmountOfDonation() external view returns(uint) {
+    return totalAmountOfDonation;
+  }
+
   modifier affordPay() {
     require(msg.sender.balance >= msg.value, "You don't have enough eth!!");
     _;
   }
 
   function canStart(uint _price) external view returns(bool) {
-    if (msg.sender.balance >= _price * 2 wei) {
+    if (msg.sender.balance >= _price.mul(2)) {
       return true;
     } else {
       return false;
@@ -31,12 +39,12 @@ contract RockPaperScissors is Ownable {
 
   function random() private view returns (uint) {
     uint randomHash = uint(keccak256(abi.encodePacked(block.difficulty, now)));
-    return randomHash % 3;
+    return randomHash.div(3);
   }
 
   function rpsCalc(uint _userHand, uint _randHand) private pure returns (uint) {
     // マイナスが入るが大丈夫か？？
-    uint result = (_userHand - _randHand + 3) % 3;
+    uint result = (_userHand.sub(_randHand).add(3)).div(3);
     return result;
   }
 
@@ -46,17 +54,19 @@ contract RockPaperScissors is Ownable {
 
     if (result == 1) {
       // LOSE
-      donationAddress.transfer(msg.value / 2);
-      msg.sender.transfer(msg.value / 2);
-      emit RpsResult(1, msg.value / 2);
+      donationAddress.transfer(msg.value.div(2));
+      totalAmountOfDonation += msg.value.div(2);
+      msg.sender.transfer(msg.value.div(2));
+      emit RpsResult(1);
     } else if (result == 2) {
       // WIN
       donationAddress.transfer(msg.value);
-      emit RpsResult(2, msg.value);
+      totalAmountOfDonation += msg.value;
+      emit RpsResult(2);
     } else if (result == 0){
       // DRAW
       msg.sender.transfer(msg.value);
-      emit RpsResult(0, 0);
+      emit RpsResult(0);
     } else {
       // if result is not 0,1,2 means Error.
       revert();

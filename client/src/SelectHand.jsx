@@ -50,33 +50,6 @@ class SelectHand extends React.Component {
     });
     // GASの決定方法？？
     contract.rockPaperScissors(this.props.hand, { from: accounts[0], value: doubleStakeWei, gas: '100000' })
-    //  .then((result) => {
-    //    const status = result.receipt.status;
-    //    console.log(result);
-    //    console.log(status);
-    //    if (status) {
-    //      // When transaction was succeeded
-    //      console.log(result.logs[0].args._result.toString(10));
-    //      const rpsResult = result.logs[0].args._result.toString(10)
-    //      switch (rpsResult) {
-    //        case '0':
-    //          this.props.changePhase('draw');
-    //          break;
-    //        case '1':
-    //          this.props.changePhase('lose');
-    //          break;
-    //        case '2':
-    //          this.props.changePhase('win');
-    //          break;
-    //        default:
-    //          break;
-    //      }
-    //    } else {
-    //      // When transaction was failed
-    //      this.props.changePhase('unknownError', result);
-    //    }
-    //  })
-    //  .catch((e) => alert(e));
   }
 
   handleSubmit = (e) => {
