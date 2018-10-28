@@ -71,13 +71,17 @@ class App extends React.Component {
       //await contract.setDonationAddress("0x16486F0ED7a923Bd5b70A4e666A6BfBDB822dEAF", { from: accounts[0] });
       const balanceWei = await web3.eth.getBalance(accounts[0]);
       const balanceEth = web3.utils.fromWei(balanceWei, 'ether')
+
       const donationAddress = await contract.checkDonationAddress();
+
+      const totalAmountOfDonation = await contract.getTotalAmountOfDonation();
+      const totalEth = web3.utils.fromWei(totalAmountOfDonation, 'ether');
+
       // if there are any change in balance or address to donation, change state
-      if (balanceEth !== this.state.balance || donationAddress !== this.state.donationAddress) {
-        this.setState({ balance: balanceEth.toString(), donationAddress: donationAddress.toString() });
+      if (balanceEth !== this.state.balance || donationAddress !== this.state.donationAddress || totalEth !== this.state.totalAmountOfDonation) {
+        this.setState({ balance: balanceEth.toString(), donationAddress: donationAddress.toString(), totalAmountOfDonation: totalEth });
       }
-      //const totalAmountOfDonation = await contract.getTotalAmountOfDonation();
-      //this.setState({totalAmountOfDonation});
+      
     }
   };
 
@@ -189,9 +193,9 @@ class App extends React.Component {
                 {this.state.web3 ? <span className="address-url"><a href={`https://etherscan.io/address/${this.state.donationAddress}`} target="_blank">Etherscanで見る</a></span> : null}
               </div>
               <div className="on-chain-data">
-                <span className="tag">今までの寄付金総額</span>
+                <span className="tag">今までに集まった寄付金総額</span>
                 <span className="value">
-                  {this.state.web3 ? this.state.totalAmountOfDonation : "Web3との連携がなされていません"}
+                  {this.state.web3 ? this.state.totalAmountOfDonation : "Web3との連携がなされていません"} ETH
                 </span>
               </div>
             </div>
