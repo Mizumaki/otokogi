@@ -5,7 +5,7 @@ const Top5Table = (props) => {
     <tr>
       <td>{rowProps.i + 1}</td>
       <td>{rowProps.amount}</td>
-      <td><a href={`https://etherscan.io/address/${rowProps.address}`} target="_blank">{rowProps.address}</a></td>
+      <td className="address"><a href={`https://etherscan.io/address/${rowProps.address}`} target="_blank">{rowProps.address}</a></td>
     </tr>
   );
 

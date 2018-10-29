@@ -53,9 +53,7 @@ class App extends React.Component {
       const Contract = truffleContract(RpsContract);
       Contract.setProvider(web3.currentProvider);
       const instance = await Contract.deployed();
-
-      this.setState({ web3, accounts, contract: instance }, this.updateInfo);
-      this.setState({ connectingWeb3: false });
+      this.setState({ web3, accounts, contract: instance, connectingWeb3: false }, this.updateInfo);
     }
     catch (error) {
       this.setState({ connectingWeb3: false });
@@ -67,6 +65,7 @@ class App extends React.Component {
 
   updateInfo = async () => {
     if (this.state.web3) {
+      console.log('in updateInfo');
       const { web3, accounts, contract } = this.state;
       //await contract.setDonationAddress("0x16486F0ED7a923Bd5b70A4e666A6BfBDB822dEAF", { from: accounts[0] });
       const balanceWei = await web3.eth.getBalance(accounts[0]);
@@ -81,7 +80,6 @@ class App extends React.Component {
       if (balanceEth !== this.state.balance || donationAddress !== this.state.donationAddress || totalEth !== this.state.totalAmountOfDonation) {
         this.setState({ balance: balanceEth.toString(), donationAddress: donationAddress.toString(), totalAmountOfDonation: totalEth });
       }
-      
     }
   };
 
@@ -157,8 +155,10 @@ class App extends React.Component {
         case "data":
           return (
             <div>
-              <Explanation decideEth {...this.state} connectWeb3={this.connectWeb3} changePhase={this.changePhase} />
-              <Data {...this.state} />
+              <Explanation {...this.state} connectWeb3={this.connectWeb3} changePhase={this.changePhase} />
+              <div>
+                <Data {...this.state} />
+              </div>
             </div>
           )
         default:
