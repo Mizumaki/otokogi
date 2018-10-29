@@ -1,7 +1,7 @@
 import React from "react";
 import getWeb3 from "./utils/getWeb3";
 import RpsContract from "./contracts/RockPaperScissors.json";
-import truffleContract from "truffle-contract";
+import truffleContract from "./truffle-contract/index";
 import Explanation from "./Explanation.jsx";
 import DecideEthAmount from "./DecideEthAmount.jsx";
 import SelectHand from "./SelectHand.jsx";
@@ -200,6 +200,9 @@ class App extends React.Component {
               </div>
             </div>
           </div>
+        </div>
+        <div className="links">
+          <a href=""></a>
         </div>
         <div className="main">
           {main}

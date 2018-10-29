@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+/truffle-contract
 
 # testing
 /coverage
