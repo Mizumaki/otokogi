@@ -3,12 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@babel/polyfill": "^7.0.0",
     "bignumber.js": "^7.2.1",
     "d3": "^5.7.0",
     "react": "^16.4.2",
     "react-c3js": "^0.1.20",
     "react-dom": "^16.4.2",
-    "react-scripts": "1.1.4",
+    "react-scripts": "2.0.5",
     "truffle-contract": "^4.0.0-next.0",
     "web3": "^1.0.0-beta.35"
   },
@@ -23,5 +24,11 @@
   },
   "devDependencies": {
     "run-script-os": "^1.0.3"
-  }
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }
