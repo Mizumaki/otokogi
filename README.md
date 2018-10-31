@@ -4,4 +4,4 @@
 
 まだテスト段階ですので、実際に稼働はできません。
 
-https://crypto-otokogi.firebaseapp.com/
+https://crypto-otokogi.firebaseapp.com

@@ -6,7 +6,7 @@ import 'c3/c3.css';
 class Data extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { top5WinDonate: [], top5LoseDonate: [], winCount: 0, loseCount: 0, drawCount: 0 }
+    this.state = { top5WinDonate: [], top5LoseDonate: [], winCount: 0, loseCount: 0, drawCount: 0, loading: false }
     this.setTop5DonatesAndCount = this.setTop5DonatesAndCount.bind(this);
     this.setTop5WinDonateAndCount = this.setTop5WinDonateAndCount.bind(this);
     this.setTop5LoseDonateAndCount = this.setTop5LoseDonateAndCount.bind(this);
@@ -22,7 +22,7 @@ class Data extends React.Component {
   }
 
   componentDidUpdate = () => {
-    if (this.props.web3 && this.props.connectingWeb3 === false) {
+    if (this.props.web3) {
       console.log('in compDidUpdate : Data.jsx web3');
       this.setTop5DonatesAndCount();
     }
@@ -33,51 +33,59 @@ class Data extends React.Component {
     if (!contract) {
       return;
     } else {
-      this.setTop5WinDonateAndCount();
-      this.setTop5LoseDonateAndCount();
-      this.setDrawCount();
+      Promise.all([
+        this.setTop5WinDonateAndCount(),
+        this.setTop5LoseDonateAndCount()
+      ])
+        .then(() => {
+          this.setDrawCount();
+      })
     }
   }
 
-  setTop5WinDonateAndCount = async () => {
-    // 同率の場合は新しいtxを優先するということで、無視
-    const { contract } = this.props;
-    contract.getPastEvents('RpsResult', { filter: { _result: "2" }, fromBlock: 0, toBlock: 'latest' })
-      .then((res) => {
-        if (this.state.winCount === res.length) {
-          return;
-        }
-        this.setState({ winCount: res.length });
-        const top5WinBlocks = this.extractTop5Blocks(res);
-        return this.extractTop5DonationData(top5WinBlocks);
-      })
-      .then((top5WinDonate) => {
-        if (top5WinDonate !== undefined) {
-          this.setState({ top5WinDonate: top5WinDonate });
-        }
-      })
-      .catch(e => console.log(e));
+  setTop5WinDonateAndCount = () => {
+    return new Promise((resolve, reject) => {
+      // 同率の場合は新しいtxを優先するということで、無視
+      const { contract } = this.props;
+      contract.getPastEvents('RpsResult', { filter: { _result: "2" }, fromBlock: 0, toBlock: 'latest' })
+        .then((res) => {
+          if (this.state.winCount === res.length) {
+            return;
+          }
+          this.setState({ winCount: res.length });
+          const top5WinBlocks = this.extractTop5Blocks(res);
+          return this.extractTop5DonationData(top5WinBlocks);
+        })
+        .then((top5WinDonate) => {
+          if (top5WinDonate !== undefined) {
+            resolve(this.setState({ top5WinDonate: top5WinDonate }));
+          }
+        })
+        .catch(e => reject(e));
+    })
   }
 
-  setTop5LoseDonateAndCount = async () => {
-    // 同率の場合は新しいtxを優先するということで、無視
-    const { contract } = this.props;
-    contract.getPastEvents('RpsResult', { filter: { _result: "1" }, fromBlock: 0, toBlock: 'latest' })
-      .then((res) => {
-        if (this.state.loseCount === res.length) {
-          return;
-        }
-        this.setState({ loseCount: res.length });
-
-        const top5LoseBlocks = this.extractTop5Blocks(res);
-        return this.extractTop5DonationData(top5LoseBlocks);
-      })
-      .then((top5LoseDonate) => {
-        if (top5LoseDonate !== undefined) {
-          this.setState({ top5LoseDonate: top5LoseDonate });
-        }
-      })
-      .catch(e => console.log(e));
+  setTop5LoseDonateAndCount = () => {
+    return new Promise((resolve, reject) => {
+      // 同率の場合は新しいtxを優先するということで、無視
+      const { contract } = this.props;
+      contract.getPastEvents('RpsResult', { filter: { _result: "1" }, fromBlock: 0, toBlock: 'latest' })
+        .then((res) => {
+          if (this.state.loseCount === res.length) {
+            return;
+          }
+          this.setState({ loseCount: res.length });
+  
+          const top5LoseBlocks = this.extractTop5Blocks(res);
+          return this.extractTop5DonationData(top5LoseBlocks);
+        })
+        .then((top5LoseDonate) => {
+          if (top5LoseDonate !== undefined) {
+            resolve(this.setState({ top5LoseDonate: top5LoseDonate }));
+          }
+        })
+        .catch(e => reject(e));
+    })
   }
 
   setDrawCount = () => {
@@ -156,7 +164,7 @@ class Data extends React.Component {
   }
 
   render() {
-    const top5WinDonate = this.state.top5WinDonate.length !== 0 ? (
+    const top5WinDonate = this.props.web3 ? (
       <div className="table">
         <h2>漢気ありすぎ！<br />勝者の寄付額TOP5</h2>
         <Top5Table top5={this.state.top5WinDonate} />
@@ -173,6 +181,7 @@ class Data extends React.Component {
       <div className="donation-amount">
         <h2>今までに集まった寄付金総額</h2>
         <p>{this.props.totalAmountOfDonation} ETH</p>
+        <p>{Math.floor(this.props.calcEthToFiat(this.props.totalAmountOfDonation))} 円</p>
       </div>
     ) : null;
     
@@ -180,7 +189,10 @@ class Data extends React.Component {
       <div className="data">
         {donationAmount}
         <PieChart winCount={this.state.winCount} loseCount={this.state.loseCount} drawCount={this.state.drawCount} />
-        {top5WinDonate}
+        <div className="table">
+          <h2>漢気ありすぎ！<br />勝者の寄付額TOP5</h2>
+          <Top5Table top5={this.state.top5WinDonate} />
+        </div>
         {top5LoseDonate}
       </div>
     );

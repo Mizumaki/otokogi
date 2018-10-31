@@ -22,6 +22,8 @@ class SelectHand extends React.Component {
     const doubleStakeWei = web3.utils.toWei(doubleStakeEth.toString(), 'ether');
     console.log(doubleStakeWei.toString());
     console.log(contract);
+    // Handling RPS event.
+    // If catch something, change page.
     contract.RpsResult({ fromBlock: 'latest', toBlock: 'latest' }, (error, result) => {
       if (!error) {
         console.log(result);
@@ -48,8 +50,12 @@ class SelectHand extends React.Component {
         this.props.changePhase('unknownError', error);
       }
     });
-    // GASの決定方法？？
-    contract.rockPaperScissors(this.props.hand, { from: accounts[0], value: doubleStakeWei, gas: '100000' })
+    // Executing contract
+    const gasPrice = await web3.eth.getGasPrice();
+    const gasLimit = 48000;
+    console.log('gaslimit', gasLimit);
+    //alert(`price : ${gasPrice} \n\n limit: ${gasLimit}`);
+    contract.rockPaperScissors(this.props.hand, { from: accounts[0], value: doubleStakeWei, gas: gasLimit, gasPrice })
   }
 
   handleSubmit = (e) => {

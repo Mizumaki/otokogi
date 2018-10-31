@@ -395,9 +395,62 @@ input[type=radio]:checked + label {
   justify-content: space-around;
 }
 
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  background: hsl(212, 50%, 12%);
+}
+
+.links a {
+  padding: 3rem;
+  width: 50%;
+  border: 1px solid black;
+}
+
+.links a:hover {
+  text-decoration: none;
+  cursor: pointer;
+  background: hsl(212, 70%, 18%);
+}
+
+.links a:first-child:hover {
+  border-top-right-radius: 1.5rem;
+  border-top-left-radius: 1.5rem;
+}
+
+.links a:last-child:hover {
+  border-bottom-right-radius: 1.5rem;
+  border-bottom-left-radius: 1.5rem;
+}
+
+.links a:active {
+  border-left: 5px solid orange;
+}
+
 @media (min-width: 1500px) {
   .info {
     position: fixed;
     right: 2rem;
   }
+
+  .links {
+    flex-direction: column;
+    width: 30rem;
+    position: fixed;
+    left: 7rem;
+    top: 5rem;
+    border-radius: 1.5rem;
+  }
+
+  .links a {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid black;
+  }
+
+  .links a:last-child {
+    border-bottom: none;
+  }
+
 }

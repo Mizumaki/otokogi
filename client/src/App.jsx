@@ -1,5 +1,7 @@
 import React from "react";
+import fetch from "whatwg-fetch";
 import getWeb3 from "./utils/getWeb3";
+import getEthPrice from "./utils/getEthPrice";
 import RpsContract from "./contracts/RockPaperScissors.json";
 import truffleContract from "truffle-contract";
 import Explanation from "./Explanation.jsx";
@@ -12,19 +14,25 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      web3: null, accounts: null, contract: null,
-      balance: "", donationAddress: "", stakeEth: "", ethToFiat: "", hand: '',
-      phase: "data", connectingWeb3: false, error: '', totalAmountOfDonation: ''
+      web3: null, accounts: null, contract: null, ethPrice: "",
+      balance: "", donationAddress: "", stakeEth: "", stakeFiat: "", hand: '',
+      phase: "decideEth", connectingWeb3: false, error: '', totalAmountOfDonation: ''
     };
+    this.calcEthToFiat = this.calcEthToFiat.bind(this);
     this.updateInfo = this.updateInfo.bind(this);
     this.connectWeb3 = this.connectWeb3.bind(this);
     this.changePhase = this.changePhase.bind(this);
     this.setStakeEth = this.setStakeEth.bind(this);
-    this.setEthToFiat = this.setEthToFiat.bind(this);
     this.setHand = this.setHand.bind(this);
+    this.toDataPage = this.toDataPage.bind(this);
+    this.toTopPage = this.toTopPage.bind(this);
   }
 
-  componentDidMount = () => {
+  componentDidMount = async () => {
+    console.log('in App.js comp did mount');
+    const ethPrice = await getEthPrice();
+    console.log(ethPrice);
+    this.setState({ ethPrice });
     this.updateInfo();
   }
 
@@ -33,12 +41,16 @@ class App extends React.Component {
     this.updateInfo();
   }
 
-  setEthToFiat = (value) => {
-    this.setState({ ethToFiat: value });
-  };
+  calcEthToFiat = (value) => {
+    const ethAmount = typeof value === 'string' ? parseFloat(value) : value;
+    const ethValue = parseFloat(this.state.ethPrice);
+    const result = ethAmount * ethValue;
+    return result;
+  }
 
   setStakeEth = (value) => {
-    this.setState({ stakeEth: value });
+    const stakeFiat = this.calcEthToFiat(value);
+    this.setState({ stakeEth: value, stakeFiat });
   };
 
   setHand = (value) => {
@@ -62,6 +74,16 @@ class App extends React.Component {
       console.log(error);
     }
   };
+
+  toDataPage = () => {
+    this.setState({ phase: 'data' });
+    return false;
+  }
+
+  toTopPage = () => {
+    this.setState({ phase: 'decideEth' });
+    return false;
+  }
 
   updateInfo = async () => {
     if (this.state.web3) {
@@ -103,7 +125,7 @@ class App extends React.Component {
             <div>
               <Explanation decideEth {...this.state} connectWeb3={this.connectWeb3} changePhase={this.changePhase} />
               <div className="form">
-                <DecideEthAmount {...this.state} changePhase={this.changePhase} setEthToFiat={this.setEthToFiat} setStakeEth={this.setStakeEth} />
+                <DecideEthAmount {...this.state} changePhase={this.changePhase} setStakeEth={this.setStakeEth} />
               </div>
             </div>
           );
@@ -112,7 +134,7 @@ class App extends React.Component {
             <div>
               <Explanation notEnoughEth decideEth {...this.state} connectWeb3={this.connectWeb3} changePhase={this.changePhase} />
               <div className="form">
-                <DecideEthAmount {...this.state} changePhase={this.changePhase} setEthToFiat={this.setEthToFiat} setStakeEth={this.setStakeEth} />
+                <DecideEthAmount {...this.state} changePhase={this.changePhase} setStakeEth={this.setStakeEth} />
               </div>
             </div>
           )
@@ -157,7 +179,7 @@ class App extends React.Component {
             <div>
               <Explanation {...this.state} connectWeb3={this.connectWeb3} changePhase={this.changePhase} />
               <div>
-                <Data {...this.state} />
+                <Data {...this.state} calcEthToFiat={this.calcEthToFiat} />
               </div>
             </div>
           )
@@ -174,6 +196,12 @@ class App extends React.Component {
             あなたの賭けたイーサリアムは寄付されます。しかし勝てば、なんと、賭けたイーサリアムの2倍の量を寄付することができます！！
             ぜひ勝って、喜びを噛み締めましょう。
           </p>
+          <div className="links">
+            <a onClick={this.toTopPage}>トップページへ</a>
+            <a onClick={this.toDataPage}>今までの寄付データを見る</a>
+            <a href="" target="_blank">じゃんけんゲームの始め方<br/>(Qitta記事へ飛びます)</a>
+            <a href="">技術的な解説<br/>(私のブログへ飛びます)</a>
+          </div>
           <div className="info">
             <div className="condition">
               {this.state.web3 ? (<div className="flag web3">Web3 detected!</div>) : <div className="flag">Web3 not detected!</div>}
@@ -200,9 +228,6 @@ class App extends React.Component {
               </div>
             </div>
           </div>
-        </div>
-        <div className="links">
-          <a href=""></a>
         </div>
         <div className="main">
           {main}
