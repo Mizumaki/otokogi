@@ -179,7 +179,7 @@ class App extends React.Component {
             <div>
               <Explanation {...this.state} connectWeb3={this.connectWeb3} changePhase={this.changePhase} />
               <div>
-                <Data {...this.state} calcEthToFiat={this.calcEthToFiat} />
+                <Data {...this.state} calcEthToFiat={this.calcEthToFiat} refresh={this.toDataPage} />
               </div>
             </div>
           )

@@ -9,9 +9,9 @@ const Row = (props) => (
 );
 
 const Top5Table = (props) => {
-  const rows = props.top5.map((e, i) =>
+  const rows = props.top5 ? props.top5.map((e, i) =>
     <Row key={i} i={i} amount={e.amount} address={e.address} />
-  );
+  ) : null;
 
   return (
     <table>

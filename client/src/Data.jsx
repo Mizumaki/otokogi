@@ -6,25 +6,29 @@ import 'c3/c3.css';
 class Data extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { top5WinDonate: [], top5LoseDonate: [], winCount: 0, loseCount: 0, drawCount: 0, loading: false }
+    this.state = { topWinDonate: [], top5LoseDonate: [], winCount: 0, loseCount: 0, drawCount: 0, loading: false, refreshed: false }
     this.setTop5DonatesAndCount = this.setTop5DonatesAndCount.bind(this);
     this.setTop5WinDonateAndCount = this.setTop5WinDonateAndCount.bind(this);
     this.setTop5LoseDonateAndCount = this.setTop5LoseDonateAndCount.bind(this);
     this.extractTop5Blocks = this.extractTop5Blocks.bind(this);
     this.extractTop5DonationData = this.extractTop5DonationData.bind(this);
     this.setDrawCount = this.setDrawCount.bind(this);
+    this.clickRefresh = this.clickRefresh.bind(this);
   }
 
   componentDidMount = () => {
     if (this.props.web3) {
+      console.log('in compDidMount');
       this.setTop5DonatesAndCount();
     }
   }
 
   componentDidUpdate = () => {
     if (this.props.web3) {
-      console.log('in compDidUpdate : Data.jsx web3');
+      console.log('in compDidUpdate');
       this.setTop5DonatesAndCount();
+    } else {
+      console.log('in compDidUpdate but nothing')
     }
   }
 
@@ -39,7 +43,7 @@ class Data extends React.Component {
       ])
         .then(() => {
           this.setDrawCount();
-      })
+        })
     }
   }
 
@@ -58,7 +62,8 @@ class Data extends React.Component {
         })
         .then((top5WinDonate) => {
           if (top5WinDonate !== undefined) {
-            resolve(this.setState({ top5WinDonate: top5WinDonate }));
+            console.log(top5WinDonate);
+            resolve(this.setState({ topWinDonate: top5WinDonate }), console.log('resolve setTop5WinDonateAmount'));
           }
         })
         .catch(e => reject(e));
@@ -75,13 +80,13 @@ class Data extends React.Component {
             return;
           }
           this.setState({ loseCount: res.length });
-  
+
           const top5LoseBlocks = this.extractTop5Blocks(res);
           return this.extractTop5DonationData(top5LoseBlocks);
         })
         .then((top5LoseDonate) => {
           if (top5LoseDonate !== undefined) {
-            resolve(this.setState({ top5LoseDonate: top5LoseDonate }));
+            resolve(this.setState({ top5LoseDonate: top5LoseDonate }), console.log('resolve setTop5WinDonateAmount'));
           }
         })
         .catch(e => reject(e));
@@ -96,6 +101,7 @@ class Data extends React.Component {
           return;
         }
         this.setState({ drawCount: res.length });
+        console.log('done setDrawCount');
       });
   }
 
@@ -163,11 +169,16 @@ class Data extends React.Component {
     })
   }
 
+  clickRefresh = () => {
+    this.props.refresh();
+    this.setState({ refreshed: true });
+  }
+
   render() {
-    const top5WinDonate = this.props.web3 ? (
+    const top5WinDonate = this.state.topWinDonate.length !== 0 ? (
       <div className="table">
         <h2>漢気ありすぎ！<br />勝者の寄付額TOP5</h2>
-        <Top5Table top5={this.state.top5WinDonate} />
+        <Top5Table top5={this.state.topWinDonate} />
       </div>
     ) : null;
 
@@ -176,7 +187,7 @@ class Data extends React.Component {
         <h2>残念これしか寄付できず！<br />敗者の寄付額TOP5</h2>
         <Top5Table top5={this.state.top5LoseDonate} />
       </div>) : null;
-    
+
     const donationAmount = this.props.web3 ? (
       <div className="donation-amount">
         <h2>今までに集まった寄付金総額</h2>
@@ -184,16 +195,15 @@ class Data extends React.Component {
         <p>{Math.floor(this.props.calcEthToFiat(this.props.totalAmountOfDonation))} 円</p>
       </div>
     ) : null;
-    
+
+    const topDonate = (<div>{top5WinDonate}{top5LoseDonate}</div>)
+
     return (
       <div className="data">
         {donationAmount}
         <PieChart winCount={this.state.winCount} loseCount={this.state.loseCount} drawCount={this.state.drawCount} />
-        <div className="table">
-          <h2>漢気ありすぎ！<br />勝者の寄付額TOP5</h2>
-          <Top5Table top5={this.state.top5WinDonate} />
-        </div>
-        {top5LoseDonate}
+        <button onClick={this.clickRefresh}>ランキングを表示する</button>
+        {this.state.refreshed ? (topDonate) : null}
       </div>
     );
   }

@@ -9,6 +9,7 @@ contract RockPaperScissors is Ownable {
 
   address donationAddress;
   uint totalAmountOfDonation;
+  mapping(address => uint) public userTotalAmountOfDonation;
   event RpsResult(uint indexed _result, uint _sendAmount);
 
   function setDonationAddress(address _account) external onlyOwner() {
@@ -22,6 +23,10 @@ contract RockPaperScissors is Ownable {
 
   function getTotalAmountOfDonation() external view returns(uint) {
     return totalAmountOfDonation;
+  }
+
+  function getUserTotalAmountOfDonation() external view returns(uint) {
+    return userTotalAmountOfDonation[msg.sender];
   }
 
   modifier affordPay() {
@@ -57,13 +62,15 @@ contract RockPaperScissors is Ownable {
     if (result == 1) {
       // LOSE
       donationAddress.transfer(msg.value.div(2));
-      totalAmountOfDonation = totalAmountOfDonation.add(msg.value.div(2));
       msg.sender.transfer(msg.value.div(2));
+      totalAmountOfDonation = totalAmountOfDonation.add(msg.value.div(2));
+      userTotalAmountOfDonation[msg.sender] = userTotalAmountOfDonation[msg.sender].add(msg.value.div(2));
       emit RpsResult(1, msg.value.div(2));
     } else if (result == 2) {
       // WIN
       donationAddress.transfer(msg.value);
       totalAmountOfDonation = totalAmountOfDonation.add(msg.value);
+      userTotalAmountOfDonation[msg.sender] = userTotalAmountOfDonation[msg.sender].add(msg.value);
       emit RpsResult(2, msg.value);
     } else if (result == 0){
       // DRAW
