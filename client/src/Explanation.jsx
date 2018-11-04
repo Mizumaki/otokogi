@@ -49,8 +49,7 @@ const Explanation = (props) => {
       <h2>🎊 おめでとうございます 🎊<br />あなたの勝ちです</h2>
       <p>
         嬉しいことに、賭けたイーサリアムの2倍の量、
-        合計 {props.stakeEth * 2 /* web3からガチのトランザクション情報より確認したいところ */} eth、日本円にして *** 円がアドレス *** に寄付されました。
-        トランザクション生成に、*** Gasを消費しました。
+        合計 {props.stakeEth * 2} eth、日本円にして {props.stakeFiat * 2} 円が<a href={`https://etherscan.io/address/${props.donationAddress}`} target="_blank">寄付先のアドレス</a>に寄付されました。
       </p>
     </div>
   );
@@ -61,8 +60,8 @@ const Explanation = (props) => {
       <h2>😢 残念でした 😭<br />あなたの負けです</h2>
       <p>
         残念なことに、賭けたイーサリアムと同じ量、
-        合計 *** eth、日本円にして *** 円しかアドレス *** に寄付することができませんでした。
-        トランザクション生成に、*** Gasを消費しました。
+        合計 {props.stakeEth} eth、日本円にして {props.stakeFiat} 円しか<a href={`https://etherscan.io/address/${props.donationAddress}`} target="_blank">寄付先のアドレス</a>に寄付することができませんでした。
+        トランザクション生成時に支払ったEthの半分、{props.stakeEth} eth がアカウントに戻されました。
       </p>
     </div>
   );

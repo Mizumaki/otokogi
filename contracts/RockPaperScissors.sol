@@ -16,7 +16,6 @@ contract RockPaperScissors is Ownable {
     donationAddress = _account;
   }
 
-  // checkよりgetだな
   function checkDonationAddress() external view returns(address) {
     return donationAddress;
   }
@@ -25,13 +24,8 @@ contract RockPaperScissors is Ownable {
     return totalAmountOfDonation;
   }
 
-  function getUserTotalAmountOfDonation() external view returns(uint) {
-    return userTotalAmountOfDonation[msg.sender];
-  }
-
-  modifier affordPay() {
-    require(msg.sender.balance >= msg.value, "You don't have enough eth!!");
-    _;
+  function getUserTotalAmountOfDonation(address _userAddress) external view returns(uint) {
+    return userTotalAmountOfDonation[_userAddress];
   }
 
   function canStart(uint _price) external view returns(bool) {
@@ -42,8 +36,8 @@ contract RockPaperScissors is Ownable {
     }
   }
 
-  function random() private view returns (uint) {
-    uint randomHash = uint(keccak256(abi.encodePacked(block.difficulty, now)));
+  function random(uint _num) private view returns (uint) {
+    uint randomHash = uint(keccak256(abi.encodePacked(block.difficulty, block.timestamp, _num)));
     return randomHash.mod(3);
   }
 
@@ -55,8 +49,8 @@ contract RockPaperScissors is Ownable {
     }
   }
 
-  function rockPaperScissors(uint _userHand) external affordPay() payable {
-    uint randHand = random();
+  function rockPaperScissors(uint _userHand, uint _num) external payable {
+    uint randHand = random(_num);
     uint result = rpsCalc(_userHand, randHand);
 
     if (result == 1) {

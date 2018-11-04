@@ -11,7 +11,7 @@ const PieChart = (props) => {
     ],
     type: 'pie'
   }
-  if (winCount, loseCount, drawCount === 0) {
+  if (winCount === 0 && loseCount === 0 && drawCount === 0) {
     return null;
   } else {
     return (

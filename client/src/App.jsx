@@ -14,7 +14,7 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      web3: null, accounts: null, contract: null, ethPrice: "",
+      web3: null, accounts: null, contract: null, ethPrice: "", userTotalAmountOfDonation: '',
       balance: "", donationAddress: "", stakeEth: "", stakeFiat: "", hand: '',
       phase: "decideEth", connectingWeb3: false, error: '', totalAmountOfDonation: ''
     };
@@ -86,7 +86,7 @@ class App extends React.Component {
   }
 
   updateInfo = async () => {
-    if (this.state.web3) {
+    if (this.state.web3 && this.state.accounts[0] !== undefined) {
       console.log('in updateInfo');
       const { web3, accounts, contract } = this.state;
       //await contract.setDonationAddress("0x16486F0ED7a923Bd5b70A4e666A6BfBDB822dEAF", { from: accounts[0] });
@@ -98,9 +98,12 @@ class App extends React.Component {
       const totalAmountOfDonation = await contract.getTotalAmountOfDonation();
       const totalEth = web3.utils.fromWei(totalAmountOfDonation, 'ether');
 
+      const userTotalAmountOfDonationWei = await contract.getUserTotalAmountOfDonation(accounts[0]);
+      const userTotalAmountOfDonation = web3.utils.fromWei(userTotalAmountOfDonationWei, 'ether');
+
       // if there are any change in balance or address to donation, change state
-      if (balanceEth !== this.state.balance || donationAddress !== this.state.donationAddress || totalEth !== this.state.totalAmountOfDonation) {
-        this.setState({ balance: balanceEth.toString(), donationAddress: donationAddress.toString(), totalAmountOfDonation: totalEth });
+      if (balanceEth !== this.state.balance || donationAddress !== this.state.donationAddress || totalEth !== this.state.totalAmountOfDonation || userTotalAmountOfDonation.toString() !== this.state.userTotalAmountOfDonation) {
+        this.setState({ balance: balanceEth.toString(), donationAddress: donationAddress.toString(), totalAmountOfDonation: totalEth, userTotalAmountOfDonation: userTotalAmountOfDonation.toString() });
       }
     }
   };
@@ -211,6 +214,12 @@ class App extends React.Component {
                 <span className="tag">アカウントのETH残高</span>
                 <span className="value">
                   {this.state.web3 ? this.state.balance : "Web3との連携がなされていません"} ETH
+                </span>
+              </div>
+              <div className="on-chain-data">
+                <span className="tag">このアカウントの寄付額</span>
+                <span className="value">
+                  {this.state.web3 ? this.state.userTotalAmountOfDonation : "Web3との連携がなされていません"} ETH
                 </span>
               </div>
               <div className="on-chain-data">

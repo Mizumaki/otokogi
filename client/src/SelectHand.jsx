@@ -19,6 +19,7 @@ class SelectHand extends React.Component {
   rps = async () => {
     const { web3, contract, accounts } = this.props;
     const doubleStakeEth = parseFloat(this.props.stakeEth) * 2;
+    console.log(doubleStakeEth);
     const doubleStakeWei = web3.utils.toWei(doubleStakeEth.toString(), 'ether');
     console.log(doubleStakeWei.toString());
     console.log(contract);
@@ -52,10 +53,10 @@ class SelectHand extends React.Component {
     });
     // Executing contract
     const gasPrice = await web3.eth.getGasPrice();
-    const gasLimit = 48000;
+    const gasLimit = 75000;
     console.log('gaslimit', gasLimit);
-    //alert(`price : ${gasPrice} \n\n limit: ${gasLimit}`);
-    contract.rockPaperScissors(this.props.hand, { from: accounts[0], value: doubleStakeWei, gas: gasLimit, gasPrice })
+    const random = Math.floor(Math.random() * 10000);
+    contract.rockPaperScissors(this.props.hand, random, { from: accounts[0], value: doubleStakeWei, gas: gasLimit, gasPrice })
   }
 
   handleSubmit = (e) => {

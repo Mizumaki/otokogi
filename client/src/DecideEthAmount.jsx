@@ -12,16 +12,14 @@ class DecideEthAmount extends React.Component {
     this.props.setStakeEth(event.target.value);
   }
 
-  handleSubmit = (event) => {
+  handleSubmit = async (event) => {
+    event.preventDefault();
     if (this.props.web3) {
-      const { web3, accounts, contract } = this.props;
+      const { web3, contract } = this.props;
       const stakeWei = web3.utils.toWei(this.props.stakeEth, 'ether');
-      console.log(stakeWei);
-      console.log(new BN(stakeWei, 10));
-      const canStart = contract.canStart(stakeWei);
+      const canStart = await contract.canStart(stakeWei);
       const next = canStart ? "selectHand" : "notEnoughEth";
       this.props.changePhase(next);
-      event.preventDefault();
     }
   }
   

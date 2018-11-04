@@ -133,7 +133,7 @@ class Data extends React.Component {
 
     let top5Blocks = [];
 
-    const tmpAmount = new Array(...top5Amount);
+    const tmpAmount = top5Amount.length === 1 ? [top5Amount[0]] :new Array(...top5Amount);
     top5Amount.sort((a, b) => b - a);
     console.log('top5Amount is sorted', top5Amount);
 
@@ -202,7 +202,9 @@ class Data extends React.Component {
       <div className="data">
         {donationAmount}
         <PieChart winCount={this.state.winCount} loseCount={this.state.loseCount} drawCount={this.state.drawCount} />
-        <button onClick={this.clickRefresh}>ランキングを表示する</button>
+        <div className="button">
+          {this.props.web3 ? (<button onClick={this.clickRefresh}>ランキングを表示する</button>) : null}
+        </div>
         {this.state.refreshed ? (topDonate) : null}
       </div>
     );
