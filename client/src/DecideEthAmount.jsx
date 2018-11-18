@@ -32,7 +32,7 @@ class DecideEthAmount extends React.Component {
     return (
       <form onSubmit={this.handleSubmit} >
         <label htmlFor="amountOfEth">賭けるEthの量</label>
-        <input type="number" step="0.01" min="0.01" id="amountOfEth" name="amountOfEth" placeholder="0.00" value={this.props.stakeEth} onChange={this.handleChange} required />
+        <input type="number" step="0.01" min="0 .01" id="amountOfEth" name="amountOfEth" placeholder="0.00" value={this.props.stakeEth} onChange={this.handleChange} required />
         <label htmlFor="ethToFiatResult">日本円での支払い額概算</label>
         <output name="ethToFiatResult" id="ethToFiatResult">{this.props.stakeFiat}円</output>
         {submit}

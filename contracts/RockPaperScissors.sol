@@ -10,7 +10,7 @@ contract RockPaperScissors is Ownable {
   address donationAddress;
   uint totalAmountOfDonation;
   mapping(address => uint) public userTotalAmountOfDonation;
-  event RpsResult(uint indexed _result, uint _sendAmount);
+  event RpsResult(address indexed _address, uint indexed _result, uint _sendAmount);
 
   function setDonationAddress(address _account) external onlyOwner() {
     donationAddress = _account;
@@ -59,17 +59,17 @@ contract RockPaperScissors is Ownable {
       msg.sender.transfer(msg.value.div(2));
       totalAmountOfDonation = totalAmountOfDonation.add(msg.value.div(2));
       userTotalAmountOfDonation[msg.sender] = userTotalAmountOfDonation[msg.sender].add(msg.value.div(2));
-      emit RpsResult(1, msg.value.div(2));
+      emit RpsResult(msg.sender, 1, msg.value.div(2));
     } else if (result == 2) {
       // WIN
       donationAddress.transfer(msg.value);
       totalAmountOfDonation = totalAmountOfDonation.add(msg.value);
       userTotalAmountOfDonation[msg.sender] = userTotalAmountOfDonation[msg.sender].add(msg.value);
-      emit RpsResult(2, msg.value);
+      emit RpsResult(msg.sender, 2, msg.value);
     } else if (result == 0){
       // DRAW
       msg.sender.transfer(msg.value);
-      emit RpsResult(0, 0);
+      emit RpsResult(msg.sender, 0, 0);
     } else {
       // if result is not 0,1,2 means Error.
       revert();

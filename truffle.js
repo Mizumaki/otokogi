@@ -15,7 +15,7 @@ module.exports = {
       provider: function () {
         return new HDWalletProvider(
           privateKey,
-          "https://mainnet.infura.io/" + infuraApiKey
+          "https://mainnet.infura.io/v3/" + infuraApiKey
         );
       },
       network_id: 1,
