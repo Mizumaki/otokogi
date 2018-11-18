@@ -3,7 +3,7 @@ import Top5Table from './Top5Table';
 import PieChart from './PieChart';
 import 'c3/c3.css';
 
-class Data extends React.Component {
+class AllData extends React.Component {
   constructor(props) {
     super(props);
     this.state = { topWinDonate: [], top5LoseDonate: [], winCount: 0, loseCount: 0, drawCount: 0, loading: false, refreshed: false }
@@ -211,4 +211,4 @@ class Data extends React.Component {
   }
 }
 
-export default Data;
+export default AllData;

@@ -12,7 +12,6 @@ class RpsResult extends React.Component {
   
   handleSolEvent = () => {
     if (this.props.contract && this.props.accounts) {
-      alert('fetch event is mounted');
       // Addressを現在のアカウントのものに絞り込む必要性あり
       this.props.contract.RpsResult({ filter: { _address: this.props.accounts[0] }, fromBlock: 'latest', toBlock: 'latest' }, (error, result) => {
         if (!error) {
