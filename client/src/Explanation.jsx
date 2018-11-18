@@ -1,5 +1,44 @@
 import React from 'react';
 
+const Win = (props) => {
+  return (
+    <div className="rps-result win">
+      <i className="fas fa-crown"></i>
+      <h2>🎊 おめでとうございます 🎊<br />あなたの勝ちです</h2>
+      <p>
+        嬉しいことに、賭けたイーサリアムの2倍の量、
+        合計 {props.stakeEth * 2} eth、日本円にして {props.stakeFiat * 2} 円が<a href={`https://etherscan.io/address/${props.donationAddress}`} target="_blank">寄付先のアドレス</a>に寄付されました。
+      </p>
+    </div>
+  );
+}
+
+const Lose = (props) => {
+  return (
+    <div className="rps-result lose">
+      <i className="fas fa-tired"></i>
+      <h2>😢 残念でした 😭<br />あなたの負けです</h2>
+      <p>
+        残念なことに、賭けたイーサリアムと同じ量、
+        合計 {props.stakeEth} eth、日本円にして {props.stakeFiat} 円しか<a href={`https://etherscan.io/address/${props.donationAddress}`} target="_blank">寄付先のアドレス</a>に寄付することができませんでした。
+        トランザクション生成時に支払ったEthの半分、{props.stakeEth} eth がアカウントに戻されました。
+      </p>
+    </div>
+  );
+}
+
+const Waiting = () => {
+  return (
+    <div className="rps-result">
+      <i className=""></i>
+      <h2>トランザクションが承認されるのを待っています。</h2>
+      <p>
+        トランザクションが承認されるまで、しばらくお待ちください。
+      </p>
+    </div>
+  );
+}
+
 const Explanation = (props) => {
 
   const promptToConnectWeb3 = (
@@ -43,29 +82,6 @@ const Explanation = (props) => {
     </div>
   );
 
-  const win = (
-    <div className="rps-result win">
-      <i className="fas fa-crown"></i>
-      <h2>🎊 おめでとうございます 🎊<br />あなたの勝ちです</h2>
-      <p>
-        嬉しいことに、賭けたイーサリアムの2倍の量、
-        合計 {props.stakeEth * 2} eth、日本円にして {props.stakeFiat * 2} 円が<a href={`https://etherscan.io/address/${props.donationAddress}`} target="_blank">寄付先のアドレス</a>に寄付されました。
-      </p>
-    </div>
-  );
-
-  const lose = (
-    <div className="rps-result lose">
-      <i className="fas fa-tired"></i>
-      <h2>😢 残念でした 😭<br />あなたの負けです</h2>
-      <p>
-        残念なことに、賭けたイーサリアムと同じ量、
-        合計 {props.stakeEth} eth、日本円にして {props.stakeFiat} 円しか<a href={`https://etherscan.io/address/${props.donationAddress}`} target="_blank">寄付先のアドレス</a>に寄付することができませんでした。
-        トランザクション生成時に支払ったEthの半分、{props.stakeEth} eth がアカウントに戻されました。
-      </p>
-    </div>
-  );
-
   const unknownError = (
     <div className="popup warning">
       <p>エラーが起きました。以下がトランザクションの情報です。</p>
@@ -81,15 +97,33 @@ const Explanation = (props) => {
     return unknownError;
   }
 
-  if (props.win || props.lose) {
-    const result = props.win ? win : lose;
-    const onClick = () => {
-      props.changePhase("decideEth");
-      return false;
-    }
+  const onClick = () => {
+    props.changePhase("decideEth");
+    return false;
+  }
+
+  if (props.waiting) {
     return (
       <div>
-        {result}
+        <Waiting />
+        <a className="link" onClick={onClick}>トップへ戻る</a>
+      </div>
+    );
+  }
+  
+  if (props.win) {
+    return (
+      <div>
+        <Win {...props} />
+        <a className="link" onClick={onClick}>トップへ戻る</a>
+      </div>
+    );
+  }
+
+  if (props.lose) {
+    return (
+      <div>
+        <Lose {...props} />
         <a className="link" onClick={onClick}>トップへ戻る</a>
       </div>
     );

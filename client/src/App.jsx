@@ -1,5 +1,4 @@
 import React from "react";
-import fetch from "whatwg-fetch";
 import getWeb3 from "./utils/getWeb3";
 import getEthPrice from "./utils/getEthPrice";
 import RpsContract from "./contracts/RockPaperScissors.json";
@@ -8,6 +7,7 @@ import Explanation from "./Explanation.jsx";
 import DecideEthAmount from "./DecideEthAmount.jsx";
 import SelectHand from "./SelectHand.jsx";
 import Data from "./Data.jsx";
+import FetchEvent from "./FetchEvent";
 import "./App.css";
 
 class App extends React.Component {
@@ -15,7 +15,7 @@ class App extends React.Component {
     super(props);
     this.state = {
       web3: null, accounts: null, contract: null, ethPrice: "", userTotalAmountOfDonation: '',
-      balance: "", donationAddress: "", stakeEth: "", stakeFiat: "", hand: '',
+      balance: "", donationAddress: "", stakeEth: "", stakeFiat: "", hand: '', result: '',
       phase: "decideEth", connectingWeb3: false, error: '', totalAmountOfDonation: ''
     };
     this.calcEthToFiat = this.calcEthToFiat.bind(this);
@@ -29,7 +29,6 @@ class App extends React.Component {
   }
 
   componentDidMount = async () => {
-    console.log('in App.js comp did mount');
     const ethPrice = await getEthPrice();
     console.log(ethPrice);
     this.setState({ ethPrice });
@@ -159,6 +158,12 @@ class App extends React.Component {
               </div>
             </div>
           );
+        case "waiting":
+          return (
+            <div>
+              <Explanation waiting {...this.state} changePhase={this.changePhase} />
+            </div>
+          );
         case "win":
           return (
             <div>
@@ -193,6 +198,7 @@ class App extends React.Component {
 
     return (
       <div className="App">
+        {this.state.contract && this.state.accounts ? <FetchEvent {...this.state} changePhase={this.changePhase} /> : null}
         <div className="header">
           <a onClick={this.toDecideEth}><h1 className="title">漢気じゃんけんDapps</h1></a>
           <p className="game-description">このゲームでは、 実際のイーサリアムを賭けてじゃんけんをしていただきます。負けてしまうと大変残念ながら、
@@ -202,8 +208,8 @@ class App extends React.Component {
           <div className="links">
             <a onClick={this.toTopPage}>トップページへ</a>
             <a onClick={this.toDataPage}>今までの寄付データを見る</a>
-            <a href="" target="_blank">じゃんけんゲームの始め方<br/>(Qitta記事へ飛びます)</a>
-            <a href="">技術的な解説<br/>(私のブログへ飛びます)</a>
+            <a href="" target="_blank">じゃんけんゲームの始め方<br />(Qitta記事へ飛びます)</a>
+            <a href="">技術的な解説<br />(私のブログへ飛びます)</a>
           </div>
           <div className="info">
             <div className="condition">
