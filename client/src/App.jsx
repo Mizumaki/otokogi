@@ -88,17 +88,17 @@ class App extends React.Component {
     if (this.state.web3 && this.state.accounts[0] !== undefined) {
       console.log('in updateInfo');
       const { web3, accounts, contract } = this.state;
-      //await contract.setDonationAddress("0x16486F0ED7a923Bd5b70A4e666A6BfBDB822dEAF", { from: accounts[0] });
+      //await contract.setDonationAddress("0xA59B29d7dbC9794d1e7f45123C48b2b8d0a34636", { from: accounts[0] });
       const balanceWei = await web3.eth.getBalance(accounts[0]);
-      const balanceEth = web3.utils.fromWei(balanceWei, 'ether')
+      const balanceEth = web3.utils.fromWei(balanceWei.toString(), 'ether')
 
       const donationAddress = await contract.checkDonationAddress();
 
       const totalAmountOfDonation = await contract.getTotalAmountOfDonation();
-      const totalEth = web3.utils.fromWei(totalAmountOfDonation, 'ether');
+      const totalEth = web3.utils.fromWei(totalAmountOfDonation.toString(), 'ether');
 
       const userTotalAmountOfDonationWei = await contract.getUserTotalAmountOfDonation(accounts[0]);
-      const userTotalAmountOfDonation = web3.utils.fromWei(userTotalAmountOfDonationWei, 'ether');
+      const userTotalAmountOfDonation = web3.utils.fromWei(userTotalAmountOfDonationWei.toString(), 'ether');
 
       // if there are any change in balance or address to donation, change state
       if (balanceEth !== this.state.balance || donationAddress !== this.state.donationAddress || totalEth !== this.state.totalAmountOfDonation || userTotalAmountOfDonation.toString() !== this.state.userTotalAmountOfDonation) {

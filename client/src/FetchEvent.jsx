@@ -10,11 +10,14 @@ class RpsResult extends React.Component {
     this.handleSolEvent();
   }
   
-  handleSolEvent = () => {
+  handleSolEvent = async () => {
     if (this.props.contract && this.props.accounts) {
+      console.log('in wait sol event😍')
       // Addressを現在のアカウントのものに絞り込む必要性あり
-      this.props.contract.RpsResult({ filter: { _address: this.props.accounts[0] }, fromBlock: 'latest', toBlock: 'latest' }, (error, result) => {
+      await this.props.contract.RpsResult({ filter: { _address: this.props.accounts[0] }, fromBlock: 'latest', toBlock: 'latest' }, (error, result) => {
         if (!error) {
+          alert('event occured');
+          console.log('event is occured !!!!😍😍😍😍');
           console.log(result);
           // If this component is updated, the 'result' === false
           if (!result) {

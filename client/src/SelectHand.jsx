@@ -29,9 +29,7 @@ class SelectHand extends React.Component {
     console.log('gaslimit', gasLimit);
     const random = Math.floor(Math.random() * 10000);
     contract.rockPaperScissors(this.props.hand, random, { from: accounts[0], value: doubleStakeWei, gas: gasLimit, gasPrice })
-      .then(() => {
-        this.props.changePhase('waiting');
-    })
+    this.props.changePhase('waiting');
   }
 
   handleSubmit = (e) => {

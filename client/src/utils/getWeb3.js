@@ -17,7 +17,7 @@ const getWeb3 = () => {
       console.log("Injected web3 detected.");
       resolve(web3);
     } else {
-      console.log('in else getWeb3')
+      console.log('in else getWeb3');
       // Fallback to localhost if no web3 injection. We've configured this to
       // use the development console's port by default.
       const provider = new Web3.providers.HttpProvider(
