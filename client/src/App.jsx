@@ -203,13 +203,18 @@ class App extends React.Component {
           <a onClick={this.toDecideEth}><h1 className="title">漢気じゃんけんDapps</h1></a>
           <p className="game-description">このゲームでは、 実際のイーサリアムを賭けてじゃんけんをしていただきます。負けてしまうと大変残念ながら、
             あなたの賭けたイーサリアムは寄付されます。しかし勝てば、なんと、賭けたイーサリアムの2倍の量を寄付することができます！！
-            ぜひ勝って、喜びを噛み締めましょう。
+            ぜひ勝って、喜びを噛み締めましょう。(※注意：じゃんけんをすると、そのアドレスが公開される可能性があります。ご留意のうえ、ご参加ください。)
+          </p>
+          <p className="game-description">MetaMaskのセキュリティに対する変更に対応が間に合っていないため、ただ今アカウント情報を適切に表示できない可能性があります。すみません。直します。
           </p>
           <div className="links">
             <a onClick={this.toTopPage}>トップページへ</a>
             <a onClick={this.toDataPage}>今までの寄付データを見る</a>
-            <a href="" target="_blank">じゃんけんゲームの始め方<br />(Qitta記事へ飛びます)</a>
+            <a href="https://github.com/Mizumaki/otokogi">GitHub</a>
+            {/* 
             <a href="">技術的な解説<br />(私のブログへ飛びます)</a>
+            <a href="" target="_blank">じゃんけんゲームの始め方<br />(Qitta記事へ飛びます)</a>
+             */}
           </div>
           <div className="info">
             <div className="condition">
