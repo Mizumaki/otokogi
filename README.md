@@ -8,4 +8,7 @@
 
 > ATTENTION: In an effort to improve user privacy, MetaMask stopped exposing user accounts to dapps if "privacy mode" is enabled on November 2nd, 2018. Dapps should now call provider.enable() in order to view and use accounts. Please see https://bit.ly/2QQHXvF for complete information and up-to-date example code.
 
+
+それに伴い、じゃんけんトランザクションを発行処理したことをキャッチできなくなってしまったため、じゃんけんを実行し、トランザクションがpendingになってもその画面が表示されないトラブルが発生しています。注意してください。
+
 https://crypto-otokogi.firebaseapp.com
