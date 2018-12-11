@@ -458,6 +458,7 @@ input[type=radio]:checked + label {
   .info {
     position: fixed;
     right: 2rem;
+    top: 1rem;
   }
 
   .links {
