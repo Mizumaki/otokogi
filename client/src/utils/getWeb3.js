@@ -14,6 +14,7 @@ const getWeb3 = () => {
       try {
         // Request account access if needed
         await window.ethereum.enable();
+        console.log("window.ethereum enebled")
         resolve(web3);
       } catch (error) {
         // User denied account access...

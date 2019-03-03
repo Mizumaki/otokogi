@@ -32,12 +32,12 @@ class App extends React.Component {
     const ethPrice = await getEthPrice();
     console.log(ethPrice);
     this.setState({ ethPrice });
-    this.updateInfo();
+    await this.updateInfo();
   }
 
-  componentDidUpdate = () => {
+  componentDidUpdate = async () => {
     console.log("in comp did update");
-    this.updateInfo();
+    await this.updateInfo();
   }
 
   calcEthToFiat = (value) => {
@@ -85,26 +85,40 @@ class App extends React.Component {
   }
 
   updateInfo = async () => {
-    if (this.state.web3 && this.state.accounts[0] !== undefined) {
-      console.log('in updateInfo');
-      const { web3, accounts, contract } = this.state;
-      //await contract.setDonationAddress("0xA59B29d7dbC9794d1e7f45123C48b2b8d0a34636", { from: accounts[0] });
-      const balanceWei = await web3.eth.getBalance(accounts[0]);
-      const balanceEth = web3.utils.fromWei(balanceWei.toString(), 'ether')
+      if (this.state.web3 && this.state.accounts[0] !== undefined) {
+        console.log('in updateInfo');
+        console.log('1');
+        const { web3, accounts, contract } = this.state;
+        console.log('2');
+        //await contract.setDonationAddress("0xA59B29d7dbC9794d1e7f45123C48b2b8d0a34636", { from: accounts[0] });
+        // await console.log(await web3.eth.getBalance(accounts[0]))
 
-      const donationAddress = await contract.checkDonationAddress();
+        // I don't know why this is not working..............!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        await web3.eth.getBalance(accounts[0], async (error, balanceWei) => {
+          console.log('we are in');
+          if (error) {
+            console.log(error);
+          }
+          console.log('3');
+          console.log('balanceWei is ', balanceWei);
+          console.log('4');
+          const balanceEth = web3.utils.fromWei(balanceWei.toString(), 'ether')
+          console.log('5');
 
-      const totalAmountOfDonation = await contract.getTotalAmountOfDonation();
-      const totalEth = web3.utils.fromWei(totalAmountOfDonation.toString(), 'ether');
+          const donationAddress = await contract.checkDonationAddress();
 
-      const userTotalAmountOfDonationWei = await contract.getUserTotalAmountOfDonation(accounts[0]);
-      const userTotalAmountOfDonation = web3.utils.fromWei(userTotalAmountOfDonationWei.toString(), 'ether');
+          const totalAmountOfDonation = await contract.getTotalAmountOfDonation();
+          const totalEth = web3.utils.fromWei(totalAmountOfDonation.toString(), 'ether');
 
-      // if there are any change in balance or address to donation, change state
-      if (balanceEth !== this.state.balance || donationAddress !== this.state.donationAddress || totalEth !== this.state.totalAmountOfDonation || userTotalAmountOfDonation.toString() !== this.state.userTotalAmountOfDonation) {
-        this.setState({ balance: balanceEth.toString(), donationAddress: donationAddress.toString(), totalAmountOfDonation: totalEth, userTotalAmountOfDonation: userTotalAmountOfDonation.toString() });
+          const userTotalAmountOfDonationWei = await contract.getUserTotalAmountOfDonation(accounts[0]);
+          const userTotalAmountOfDonation = web3.utils.fromWei(userTotalAmountOfDonationWei.toString(), 'ether');
+
+          // if there are any change in balance or address to donation, change state
+          if (balanceEth !== this.state.balance || donationAddress !== this.state.donationAddress || totalEth !== this.state.totalAmountOfDonation || userTotalAmountOfDonation.toString() !== this.state.userTotalAmountOfDonation) {
+            return this.setState({ balance: balanceEth.toString(), donationAddress: donationAddress.toString(), totalAmountOfDonation: totalEth, userTotalAmountOfDonation: userTotalAmountOfDonation.toString() });
+          }
+        });
       }
-    }
   };
 
   changePhase = (value, additional) => {
